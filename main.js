@@ -1,5 +1,5 @@
 // URL da Spritesheet (ajuste para o caminho do arquivo)
-const SPRITE_URL = 'clapping.jpg';
+const SPRITE_URL = 'clapping.png';
 
 // Dimensões originais de cada frame na grade (32 colunas x 8 linhas)
 const CONFIG = {
