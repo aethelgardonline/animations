@@ -1,5 +1,5 @@
 /**
- * SpriteAnimator - Engine leve para spritesheets matriciais (linhas x colunas)
+ * SpriteEngine Core - Suporte a Grid Spritesheets com escala, FPS e After-Images
  */
 class SpriteAnimator {
   constructor({
@@ -7,12 +7,14 @@ class SpriteAnimator {
     imageUrl,
     cols = 32,
     rows = 8,
-    frameWidth,
-    frameHeight,
+    frameWidth = 64,
+    frameHeight = 64,
     fps = 24,
     autoPlay = true,
     loop = true,
-    scale = 1
+    scale = 4,
+    direction = 0,
+    frameOffset = 0
   }) {
     this.container = typeof target === 'string' ? document.querySelector(target) : target;
     this.imageUrl = imageUrl;
@@ -23,9 +25,10 @@ class SpriteAnimator {
     this.fps = fps;
     this.loop = loop;
     this.scale = scale;
+    this.currentRow = direction;
+    this.frameOffset = frameOffset; // Permite dessincronizar o rastro fantasma
 
     this.currentCol = 0;
-    this.currentRow = 0;
     this.isPlaying = false;
     this.lastFrameTime = 0;
     this.animFrameId = null;
@@ -35,18 +38,26 @@ class SpriteAnimator {
   }
 
   init() {
-    this.container.style.width = `${this.frameWidth * this.scale}px`;
-    this.container.style.height = `${this.frameHeight * this.scale}px`;
-    this.container.style.backgroundImage = `url(${this.imageUrl})`;
+    this.updateDimensions();
+    this.container.style.backgroundImage = `url("${this.imageUrl}")`;
     this.container.style.backgroundRepeat = 'no-repeat';
-    this.container.style.backgroundSize = `${this.cols * this.frameWidth * this.scale}px ${this.rows * this.frameHeight * this.scale}px`;
-    this.updateBackground();
+    this.updateFrame();
   }
 
-  updateBackground() {
-    const xOffset = -(this.currentCol * this.frameWidth * this.scale);
-    const yOffset = -(this.currentRow * this.frameHeight * this.scale);
-    this.container.style.backgroundPosition = `${xOffset}px ${yOffset}px`;
+  updateDimensions() {
+    const w = this.frameWidth * this.scale;
+    const h = this.frameHeight * this.scale;
+    this.container.style.width = `${w}px`;
+    this.container.style.height = `${h}px`;
+    this.container.style.backgroundSize = `${this.cols * w}px ${this.rows * h}px`;
+  }
+
+  updateFrame() {
+    // Aplica o frame com suporte a offset para rastros
+    const targetCol = (this.currentCol + this.frameOffset + this.cols) % this.cols;
+    const x = -(targetCol * this.frameWidth * this.scale);
+    const y = -(this.currentRow * this.frameHeight * this.scale);
+    this.container.style.backgroundPosition = `${x}px ${y}px`;
   }
 
   tick(time) {
@@ -68,7 +79,7 @@ class SpriteAnimator {
           return;
         }
       }
-      this.updateBackground();
+      this.updateFrame();
     }
 
     this.animFrameId = requestAnimationFrame((t) => this.tick(t));
@@ -89,16 +100,17 @@ class SpriteAnimator {
   setDirection(rowIndex) {
     if (rowIndex >= 0 && rowIndex < this.rows) {
       this.currentRow = rowIndex;
-      this.updateBackground();
+      this.updateFrame();
     }
+  }
+
+  setScale(newScale) {
+    this.scale = newScale;
+    this.updateDimensions();
+    this.updateFrame();
   }
 
   setFps(newFps) {
     this.fps = newFps;
-  }
-
-  destroy() {
-    this.pause();
-    this.container.innerHTML = '';
   }
 }
