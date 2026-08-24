@@ -1,44 +1,186 @@
-    body {
-      background-color: #0b0e14;
-      color: #e2e8f0;
-      font-family: system-ui, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
-      gap: 24px;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    .sprite-stage {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-    }
+body {
+  background-color: #05070a;
+  color: #e2e8f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
 
-    /* Container do Sprite */
-    .sprite-view {
-      border: 1px solid #1e293b;
-      background-color: #000;
-      box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
-      image-rendering: pixelated; /* Mantém o aspecto retrô nítido */
-    }
+/* -------------------------------------------------------------
+   PALCO DO JOGO (GAME STAGE)
+   ------------------------------------------------------------- */
+.game-stage {
+  position: relative;
+  width: 95vw;
+  max-width: 1200px;
+  height: 600px;
+  background: radial-gradient(circle at 50% 80%, #1e293b 0%, #090d16 60%, #020408 100%);
+  border: 2px solid #1e293b;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 100px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+/* Textura simulada do chão de pedra */
+.game-stage::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 45%;
+  background: linear-gradient(to top, rgba(16, 24, 39, 0.95), transparent);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
 
-    button, select {
-      background: #1e293b;
-      color: #38bdf8;
-      border: 1px solid #334155;
-      padding: 8px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+/* Luz de Tocha / Ponto de Luz Superior */
+.torch-light {
+  position: absolute;
+  top: 15%;
+  right: 20%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: torch-flicker 2s infinite alternate ease-in-out;
+}
 
-    button:hover, select:hover {
-      background: #334155;
-    }
+@keyframes torch-flicker {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  100% { transform: scale(1.1) translate(-10px, 5px); opacity: 1; }
+}
+
+/* -------------------------------------------------------------
+   ENTIDADE DO PERSONAGEM
+   ------------------------------------------------------------- */
+.character-entity {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  margin-top: 50px;
+}
+
+/* Sombra Elíptica no Chão */
+.floor-shadow {
+  position: absolute;
+  bottom: 10px;
+  width: 140px;
+  height: 45px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 75%);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Círculo Mágico / Aura Rúnica */
+.rune-circle {
+  position: absolute;
+  bottom: -15px;
+  width: 260px;
+  height: 90px;
+  border: 2px solid rgba(56, 189, 248, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.4), inset 0 0 20px rgba(56, 189, 248, 0.3);
+  transform: rotateX(60deg);
+  animation: rune-spin 8s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes rune-spin {
+  from { transform: rotateX(60deg) rotateZ(0deg); }
+  to { transform: rotateX(60deg) rotateZ(360deg); }
+}
+
+/* -------------------------------------------------------------
+   RENDERIZADORES DE SPRITE
+   ------------------------------------------------------------- */
+.sprite-layer {
+  position: relative;
+  z-index: 2;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  /* Remove o fundo preto nativo das spritesheets sem transparência */
+  mix-blend-mode: screen; 
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+}
+
+/* Camada Principal */
+.main-character {
+  z-index: 3;
+}
+
+/* Efeito Ghost / After-Image (Rastro de Movimento) */
+.ghost-effect {
+  position: absolute;
+  left: -25px;
+  opacity: 0.45;
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.8)) hue-rotate(160deg);
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+/* -------------------------------------------------------------
+   HUD & CONTROLES
+   ------------------------------------------------------------- */
+.hud-controls {
+  margin-top: 20px;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  padding: 16px 24px;
+  border-radius: 8px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.hud-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.hud-group label {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+select, input[type="range"], button {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+button:hover, select:hover {
+  background: #334155;
+  border-color: #38bdf8;
+}
+
+button:active {
+  transform: translateY(1px);
+}
