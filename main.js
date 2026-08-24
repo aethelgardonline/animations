@@ -1,7 +1,7 @@
 // Instanciando múltiplos personagens a partir da spritesheet
 const char1 = new SpriteAnimator({
   target: '#character-1',
-  imageUrl: 'clapping.jpg', // Caminho da spritesheet
+  imageUrl: 'clapping.png', // Caminho da spritesheet
   cols: 32,                 // 32 frames horizontais
   rows: 8,                  // 8 variações / ângulos verticais
   frameWidth: 64,           // Ajuste conforme a largura exata de 1 frame em px
@@ -12,7 +12,7 @@ const char1 = new SpriteAnimator({
 
 const char2 = new SpriteAnimator({
   target: '#character-2',
-  imageUrl: 'clapping.jpg',
+  imageUrl: 'clapping.png',
   cols: 32,
   rows: 8,
   frameWidth: 64,
