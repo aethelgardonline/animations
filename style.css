@@ -1,0 +1,44 @@
+    body {
+      background-color: #0b0e14;
+      color: #e2e8f0;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      gap: 24px;
+    }
+
+    .sprite-stage {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    /* Container do Sprite */
+    .sprite-view {
+      border: 1px solid #1e293b;
+      background-color: #000;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+      image-rendering: pixelated; /* Mantém o aspecto retrô nítido */
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, select {
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover, select:hover {
+      background: #334155;
+    }
