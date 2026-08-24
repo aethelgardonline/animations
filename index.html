@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Aetheris - Sprite Animator</title>
+  <style>
+    body {
+      background-color: #0b0e14;
+      color: #e2e8f0;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      gap: 24px;
+    }
+
+    .sprite-stage {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    /* Container do Sprite */
+    .sprite-view {
+      border: 1px solid #1e293b;
+      background-color: #000;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+      image-rendering: pixelated; /* Mantém o aspecto retrô nítido */
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, select {
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover, select:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sprite-stage">
+    <div id="character-1" class="sprite-view"></div>
+    <div id="character-2" class="sprite-view"></div>
+  </div>
+
+  <div class="controls">
+    <button onclick="char1.play()">Play</button>
+    <button onclick="char1.pause()">Pause</button>
+    <button onclick="char1.setFps(30)">30 FPS</button>
+    <button onclick="char1.setFps(60)">60 FPS</button>
+    
+    <select onchange="char1.setDirection(Number(this.value))">
+      <option value="0">Direção / Linha 0</option>
+      <option value="1">Direção / Linha 1</option>
+      <option value="2">Direção / Linha 2</option>
+      <option value="3">Direção / Linha 3</option>
+      <option value="4">Direção / Linha 4</option>
+      <option value="5">Direção / Linha 5</option>
+      <option value="6">Direção / Linha 6</option>
+      <option value="7">Direção / Linha 7</option>
+    </select>
+  </div>
+
+  <script src="SpriteAnimator.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
